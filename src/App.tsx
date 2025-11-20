@@ -7,7 +7,7 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [records, setRecords] = useState<any[]>([]);
 
-  const backend = "http://localhost:3000/api";
+  const backend = "https://voiceowl-backend.onrender.com/api";
 
   const loadRecords = async () => {
     try {
