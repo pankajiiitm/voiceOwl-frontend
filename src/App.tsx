@@ -1,167 +1,64 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import TranscriptionForm from "./components/TranscriptionForm";
+import TranscriptionList from "./components/TranscriptionList";
 
 export default function App() {
-  const [audioUrl, setAudioUrl] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [records, setRecords] = useState<any[]>([]);
-
-  const backend = "https://voiceowl-backend.onrender.com/api";
-
-  const loadRecords = async () => {
-    try {
-      const res = await axios.get(`${backend}/transcriptions`);
-      setRecords(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    loadRecords();
-  }, []);
-
-  const submitTranscription = async () => {
-    if (!audioUrl.trim()) {
-      setMessage("Please enter an audio URL.");
-      return;
-    }
-
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const res = await axios.post(`${backend}/transcription`, { audioUrl });
-      setMessage(`Transcription started. ID: ${res.data.transcriptionId}`);
-      setAudioUrl("");
-      loadRecords();
-    } catch (err: any) {
-      setMessage(err.response?.data?.error || "Something went wrong.");
-    }
-
-    setLoading(false);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-6">
-      <header className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-800">
-          🎙️ VoiceOwl Transcription Dashboard
-        </h1>
-        <p className="text-gray-500 mt-2">
-          Simple, clean, and professional interface
-        </p>
-      </header>
+    <div className="min-h-screen py-12 px-6 bg-gradient-to-b from-white via-amber-50 to-white dark:from-gray-900 dark:via-gray-900">
+      <div className="max-w-6xl mx-auto">
+        <header className="flex items-center justify-between mb-10">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white shadow-lg">
+              <span className="text-2xl font-bold">🦉</span>
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
+                VoiceOwl
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                Fast, reliable transcriptions — built for developers
+              </p>
+            </div>
+          </div>
 
-      <main className="max-w-5xl mx-auto space-y-10">
-        {/* SECTION 1: Input Form */}
-        <section className="bg-white p-8 rounded-2xl shadow-lg max-w-xl mx-auto">
-          <h2 className="text-xl font-semibold mb-5 text-center">
-            Start New Transcription
-          </h2>
-
-          <div className="flex flex-col items-center gap-4">
-            <input
-              type="text"
-              placeholder="Enter audio URL…"
-              value={audioUrl}
-              onChange={(e) => setAudioUrl(e.target.value)}
-              className=" w-80    
-      p-3 
-      border border-gray-300 
-      rounded-xl 
-      shadow-sm 
-      focus:outline-none 
-      focus:ring-2 
-      focus:ring-blue-300 
-      transition"
-            />
-
-            <button
-              onClick={submitTranscription}
-              disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+          <div className="hidden md:flex items-center gap-3">
+            <a href="#" className="text-sm text-gray-600 dark:text-gray-300">
+              Docs
+            </a>
+            <a
+              href="#"
+              className="px-4 py-2 rounded-md bg-brand-500 hover:bg-brand-700 text-white text-sm shadow"
             >
-              {loading ? "Processing…" : "Submit"}
-            </button>
-
-            {message && (
-              <p className="text-sm text-blue-700 font-medium">{message}</p>
-            )}
+              Upgrade
+            </a>
           </div>
-        </section>
+        </header>
 
-        {/* SECTION 2: Table */}
-        <section className="bg-white p-8 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-5">
-            Last 30 Days Transcriptions
-          </h2>
+        <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="lg:col-span-1 glass p-6 rounded-xl shadow-glass"
+          >
+            <TranscriptionForm />
+          </motion.section>
 
-          <div className="overflow-hidden border rounded-xl">
-            <table className="w-full text-sm border-collapse">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="p-3 border">ID</th>
-                  <th className="p-3 border">Source</th>
-                  <th className="p-3 border">Audio URL</th>
-                  <th className="p-3 border">Created</th>
-                </tr>
-              </thead>
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="lg:col-span-2 p-6 rounded-xl bg-white dark:bg-gray-800 shadow-lg"
+          >
+            <TranscriptionList />
+          </motion.section>
+        </main>
 
-              <tbody>
-                {records.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="text-center p-6 text-gray-500 border"
-                    >
-                      No transcriptions found.
-                    </td>
-                  </tr>
-                ) : (
-                  records.map((r: any) => (
-                    <tr
-                      key={r._id}
-                      className="border hover:bg-gray-50 transition"
-                    >
-                      <td className="p-3 border font-mono text-xs">{r._id}</td>
-
-                      <td className="p-3 border">
-                        <span
-                          className={`px-2 py-1 rounded text-white text-xs ${
-                            r.source === "azure"
-                              ? "bg-purple-600"
-                              : r.source === "ws"
-                              ? "bg-green-600"
-                              : "bg-blue-600"
-                          }`}
-                        >
-                          {r.source?.toUpperCase() || "API"}
-                        </span>
-                      </td>
-
-                      <td className="p-3 border">
-                        <a
-                          href={r.audioUrl}
-                          target="_blank"
-                          className="text-blue-700 underline break-all"
-                        >
-                          {r.audioUrl}
-                        </a>
-                      </td>
-
-                      <td className="p-3 border text-gray-600">
-                        {new Date(r.createdAt).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </main>
+        <footer className="mt-10 text-center text-sm text-gray-500">
+          © {new Date().getFullYear()} VoiceOwl — built with ❤️
+        </footer>
+      </div>
     </div>
   );
 }

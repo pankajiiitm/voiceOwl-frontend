@@ -1,73 +1,27 @@
-body {
-  font-family: Inter, system-ui, Arial, sans-serif;
-  background: #f7f9fc;
-  color: #111827;
-  margin: 0;
-  padding: 20px;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.6);
 }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
+/* Small utility for glass look */
+.glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.5)
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-h1 {
-  margin-bottom: 12px;
-}
-
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 6px 12px rgba(17,24,39,0.06);
-  margin-bottom: 16px;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
-}
-
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.list {
-  list-style: none;
-  margin: 8px 0 0 0;
-  padding: 0;
-}
-
-.list li {
-  border-bottom: 1px solid #eee;
-  padding: 8px 0;
-}
-
-.error {
-  color: #b91c1c;
-  margin-top: 8px;
-}
-
-.success {
-  color: #065f46;
-  margin-top: 8px;
+/* reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
